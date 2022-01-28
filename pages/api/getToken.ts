@@ -31,17 +31,33 @@ export default async function getToken(request: NextApiRequest, response: NextAp
 
     */
 
-    const {data}: AxiosResponse = await axios.get(`https://${domainBase}?username=${username}&password=${password}&service=${service}`)
-    console.log(data)
-    const {token}: tokenResponse = await data.json();
+    // const data: Response = await fetch(`https://${domainBase}?username=${username}&password=${password}&service=${service}`)
+    try {
+        const {data}: AxiosResponse = await axios.get(`https://${domainBase}?username=${username}&password=${password}&service=${service}`)
+        console.log("data:", data)
+        const {token}: tokenResponse = await data.json();
+        console.log(token)
+        response.json({
+            result: {
+                domainBase,
+                username,
+                password,
+                service
+            }
+        })
+    }catch(e) {
+        console.log("erro parte do token")
+        // console.log(e)
+        response.json({
+            result: {
+                domainBase,
+                username,
+                password,
+                service,
+                error: e
+            }
+        })
+    }
+
     
-    response.json({
-        result: {
-            domainBase,
-            username,
-            password,
-            service,
-            token
-        }
-    })
 }
